@@ -54,7 +54,7 @@ public class Conference implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "conference_time")
-    private int time;
+    private String time;
 
 
     @OneToMany(mappedBy = "conference")
@@ -63,7 +63,7 @@ public class Conference implements Serializable {
 
 
 
-    public Conference(String name, String location, int capacity, int year, int month, int date, int time) {
+    public Conference(String name, String location, int capacity, int year, int month, int date, String time) {
         DateCreator dateCreator = new DateCreator();
         this.name = name;
         this.location = location;
@@ -102,7 +102,7 @@ public class Conference implements Serializable {
         this.date = date;
     }
 
-    public void setTime(int time) {
+    public void setTime(String time) {
         this.time = time;
     }
 }

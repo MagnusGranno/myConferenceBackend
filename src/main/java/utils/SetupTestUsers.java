@@ -19,9 +19,9 @@ public class SetupTestUsers {
         EntityManager em = emf.createEntityManager();
 
 
-        Conference conferenceOne = new Conference("Omega-IT", "Copenhagen", 1000, 2022, 4, 22, 300);
-        Conference conferenceTwo = new Conference("Meta", "London", 1000, 2023, 6, 15, 120);
-        Conference conferenceThree = new Conference("Startup Conf", "New York", 1000, 2023, 5, 20, 240);
+        Conference conferenceOne = new Conference("Omega-IT", "Copenhagen", 1000, 2022, 4, 22, "13:00 - 17:30");
+        Conference conferenceTwo = new Conference("Meta", "London", 1000, 2023, 6, 15, "09:30 - 12:30");
+        Conference conferenceThree = new Conference("Startup Conf", "New York", 1000, 2023, 5, 20, "11:15 - 15:45");
 
 
         Talk talkOne = new Talk("Animal Freedom", 30, "Pictures of animals");
