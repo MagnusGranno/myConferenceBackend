@@ -10,4 +10,6 @@ public class StatusDTO {
     private boolean error;
     private String message;
 
+
+
 }

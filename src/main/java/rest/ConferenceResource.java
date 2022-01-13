@@ -39,11 +39,24 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("talk/{id}")
-    @RolesAllowed({"user", "admin"})
+   // @RolesAllowed({"user", "admin"})
     public String getTalkById(@PathParam("id") long id) throws IOException {
-
         try {
             return gson.toJson(CONFERENCE_FACADE.getTalkByConference(id));
+        } catch (Exception e ) {
+            return gson.toJson(e);
+        }
+
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("talk/speaker/{id}")
+   // @RolesAllowed({"user", "admin"})
+    public String getTalkBySpeaker(@PathParam("id") long id) throws IOException {
+
+        try {
+            return gson.toJson(CONFERENCE_FACADE.getTalkBySpeaker(id));
         } catch (Exception e ) {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
