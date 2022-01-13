@@ -32,8 +32,7 @@ public class ConferenceFacade {
     }
 
 
-
-    public StatusDTO createStatusDTO (boolean error, String message) {
+    public StatusDTO createStatusDTO(boolean error, String message) {
         StatusDTO statusDTO = new StatusDTO();
         statusDTO.setMessage(message);
         statusDTO.setError(error);
@@ -57,12 +56,7 @@ public class ConferenceFacade {
 
         for (Conference c : conferenceList) {
             ConferenceDTO conferenceDTO = new ConferenceDTO();
-            conferenceDTO.setId(c.getId());
-            conferenceDTO.setName(c.getName());
-            conferenceDTO.setLocation(c.getLocation());
-            conferenceDTO.setDate(c.getDate());
-            conferenceDTO.setTime(c.getTime());
-            conferenceDTO.setCapacity(c.getCapacity());
+            conferenceDTO.convertToDTO(c);
             conferenceDTOList.add(conferenceDTO);
         }
 
@@ -85,25 +79,13 @@ public class ConferenceFacade {
             talkList = tq.getResultList();
 
 
-
             for (Talk t : talkList) {
                 TalkDTO talkDTO = new TalkDTO();
                 talkDTO.convertToDTO(t);
-                TypedQuery<Speaker> tqs = em.createQuery("Select t.speakerList from Talk t where t.id = :talk_id", Speaker.class);
-                tqs.setParameter("talk_id", t.getId());
-                List<Speaker> speakerList = new ArrayList<>();
-                List<SpeakerDTO> speakerDTOList = new ArrayList<>();
-                speakerList = tqs.getResultList();
-                for (Speaker s : speakerList) {
-                    SpeakerDTO speakerDTO = new SpeakerDTO();
-                    speakerDTO.convertToDTO(s);
-                    speakerDTOList.add(speakerDTO);
-                }
-                talkDTO.setSpeaker_list(speakerDTOList);
+                talkDTO.setSpeaker_list(getSpeakersOnTalks(t));
                 talkDTOList.add(talkDTO);
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e);
         } finally {
             em.close();
@@ -112,6 +94,7 @@ public class ConferenceFacade {
         return talkDTOList;
 
     }
+
 
     public List<TalkDTO> getTalkBySpeaker(long speakerId) {
         List<TalkDTO> talkDTOList = new ArrayList<>();
@@ -124,7 +107,7 @@ public class ConferenceFacade {
             TypedQuery<Talk> tq = em.createQuery("SELECT s.talkList from Speaker s where s.id = :speaker_id", Talk.class);
             tq.setParameter("speaker_id", speakerId);
             talkList = tq.getResultList();
-            } catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
 
         } finally {
@@ -133,9 +116,84 @@ public class ConferenceFacade {
         for (Talk t : talkList) {
             TalkDTO talkDTO = new TalkDTO();
             talkDTO.convertToDTO(t);
+            talkDTO.setSpeaker_list(getSpeakersOnTalks(t));
             talkDTOList.add(talkDTO);
         }
         return talkDTOList;
     }
+
+
+    public List<SpeakerDTO> getAllSpeakers() {
+        List<Speaker> speakerList = new ArrayList<>();
+        List<SpeakerDTO> speakerDTOList = new ArrayList<>();
+
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            TypedQuery<Speaker> tq = em.createQuery("Select s from Speaker s", Speaker.class);
+            speakerList = tq.getResultList();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            em.close();
+        }
+        for (Speaker s : speakerList) {
+            SpeakerDTO speakerDTO = new SpeakerDTO();
+            speakerDTO.convertToDTO(s);
+            speakerDTOList.add(speakerDTO);
+        }
+        return speakerDTOList;
+    }
+
+
+    public StatusDTO createConference(CreateConferenceDTO con) {
+        StatusDTO statusDTO = new StatusDTO();
+        EntityManager em = emf.createEntityManager();
+        Conference conference = new Conference(con.getName(), con.getLocation(), con.getCapacity(), con.getYear(), con.getMonth(), con.getDate(), con.getTime());
+
+        try {
+            em.getTransaction().begin();
+            em.persist(conference);
+            em.getTransaction().commit();
+
+            statusDTO.setError(false);
+            statusDTO.setMessage("Conference: " + conference.getName() + " created!");
+            return statusDTO;
+        } catch (Exception e) {
+
+            statusDTO.setError(true);
+            statusDTO.setMessage("Something went wrong!");
+            return statusDTO;
+        } finally {
+            em.close();
+        }
+
+    }
+
+    public List<SpeakerDTO> getSpeakersOnTalks(Talk talk) {
+        List<SpeakerDTO> speakerDTOList = new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Speaker> tqs = em.createQuery("Select t.speakerList from Talk t where t.id = :talk_id", Speaker.class);
+            tqs.setParameter("talk_id", talk.getId());
+            List<Speaker> speakerList = new ArrayList<>();
+
+            speakerList = tqs.getResultList();
+
+            for (Speaker s : speakerList) {
+                SpeakerDTO speakerDTO = new SpeakerDTO();
+                speakerDTO.convertToDTO(s);
+                speakerDTOList.add(speakerDTO);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            em.close();
+        }
+        return speakerDTOList;
+    }
+
+
 
 }

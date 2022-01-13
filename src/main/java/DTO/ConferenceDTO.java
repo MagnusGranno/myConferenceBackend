@@ -1,5 +1,6 @@
 package DTO;
 
+import entities.Conference;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,4 +19,13 @@ public class ConferenceDTO {
     private int capacity;
     private Date date;
     private String time;
+
+    public void convertToDTO(Conference conference) {
+        this.id = conference.getId();
+        this.name = conference.getName();
+        this.location = conference.getLocation();
+        this.capacity = conference.getCapacity();
+        this.date = conference.getDate();
+        this.time = conference.getTime();
+    }
 }

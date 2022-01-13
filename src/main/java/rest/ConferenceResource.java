@@ -1,16 +1,17 @@
 package rest;
 
+import DTO.CreateConferenceDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import errorhandling.API_Exception;
 import facades.ConferenceFacade;
 import utils.EMF_Creator;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
@@ -44,7 +45,7 @@ public class ConferenceResource {
         try {
             return gson.toJson(CONFERENCE_FACADE.getTalkByConference(id));
         } catch (Exception e ) {
-            return gson.toJson(e);
+            return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
 
     }
@@ -61,5 +62,42 @@ public class ConferenceResource {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
 
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("speakers")
+    // @RolesAllowed({"user", "admin"})
+    public String getallSpeakers() throws IOException {
+
+        try {
+            return gson.toJson(CONFERENCE_FACADE.getAllSpeakers());
+        } catch (Exception e ) {
+            return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
+        }
+
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("create/conference")
+    // @RolesAllowed({"user", "admin"})
+    public String createConference(String jsonString) throws API_Exception {
+        CreateConferenceDTO createConferenceDTO = new CreateConferenceDTO();
+        try {
+            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+            createConferenceDTO.setName(json.get("name").getAsString());
+            createConferenceDTO.setCapacity(json.get("capacity").getAsInt());
+            createConferenceDTO.setLocation(json.get("location").getAsString());
+            createConferenceDTO.setYear(json.get("year").getAsInt());
+            createConferenceDTO.setMonth(json.get("month").getAsInt());
+            createConferenceDTO.setDate(json.get("date").getAsInt());
+            createConferenceDTO.setTime(json.get("time").getAsString());
+
+        } catch(Exception e) {
+            throw new API_Exception("Malformed JSON Suplied",400,e);
+        }
+            return gson.toJson(CONFERENCE_FACADE.createConference(createConferenceDTO));
     }
 }
