@@ -2,11 +2,14 @@ package facades;
 
 import DTO.ConferenceDTO;
 import DTO.StatusDTO;
+import DTO.TalkDTO;
 import entities.Conference;
+import entities.Talk;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +63,41 @@ public class ConferenceFacade {
             conferenceDTO.setLocation(c.getLocation());
             conferenceDTO.setDate(c.getDate());
             conferenceDTO.setTime(c.getTime());
+            conferenceDTO.setCapacity(c.getCapacity());
             conferenceDTOList.add(conferenceDTO);
         }
 
         return conferenceDTOList;
+    }
+
+
+    public List<TalkDTO> getTalkByConference(long conferenceID) {
+        List<TalkDTO> talkDTOList = new ArrayList<>();
+        List<Talk> talkList = new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
+        Conference conference;
+        try {
+            em.getTransaction().begin();
+            conference = em.find(Conference.class, conferenceID);
+            TypedQuery<Talk> tq = em.createQuery("Select t from Talk t where t.conference = :conference", Talk.class);
+            tq.setParameter("conference", conference);
+            talkList = tq.getResultList();
+        } catch (Exception e)
+        {
+            System.out.println(e);
+        } finally {
+            em.close();
+        }
+        for (Talk t : talkList) {
+            TalkDTO talkDTO = new TalkDTO();
+            talkDTO.setId(t.getId());
+            talkDTO.setTopic(t.getTopic());
+            talkDTO.setDuration(t.getDuration());
+            talkDTO.setProps_list(t.getPropsList());
+            talkDTOList.add(talkDTO);
+        }
+        return talkDTOList;
+
     }
 
 }

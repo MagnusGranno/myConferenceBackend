@@ -15,6 +15,7 @@ public class ConferenceDTO {
     private long id;
     private String name;
     private String location;
+    private int capacity;
     private Date date;
     private int time;
 }
