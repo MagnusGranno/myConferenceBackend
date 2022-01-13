@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -35,15 +36,30 @@ public class Talk implements Serializable {
 
     @Basic(optional = true)
     @Column(name = "talk_props_list")
-    private List<String> propsList;
+    private String propsList;
 
 
-    public Talk(String topic, int duration, List<String> propsList) {
+    @ManyToMany(mappedBy = "talkList")
+    private List<Speaker> speakerList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "conference_id")
+    private Conference conference;
+
+    public Talk(String topic, int duration, String propsList) {
         this.topic = topic;
         this.duration = duration;
         this.propsList = propsList;
     }
 
+
+    public void setConference(Conference conference) {
+        this.conference = conference;
+    }
+
+    public void addSpeaker(Speaker speaker) {
+        speakerList.add(speaker);
+    }
     public void setTopic(String topic) {
         this.topic = topic;
     }
@@ -52,7 +68,7 @@ public class Talk implements Serializable {
         this.duration = duration;
     }
 
-    public void setPropsList(List<String> propsList) {
+    public void setPropsList(String propsList) {
         this.propsList = propsList;
     }
 }
