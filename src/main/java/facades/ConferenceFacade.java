@@ -163,13 +163,65 @@ public class ConferenceFacade {
         } catch (Exception e) {
 
             statusDTO.setError(true);
-            statusDTO.setMessage("Something went wrong!");
+            statusDTO.setMessage("unable to create conference! Try again");
             return statusDTO;
         } finally {
             em.close();
         }
 
     }
+    public StatusDTO createTalk(CreateTalkDTO ctd) {
+        StatusDTO statusDTO = new StatusDTO();
+        EntityManager em = emf.createEntityManager();
+        Talk talk = new Talk(ctd.getTopic(), ctd.getDuration(), ctd.getProps_list());
+
+        try {
+            em.getTransaction().begin();
+            em.persist(talk);
+            em.getTransaction().commit();
+
+            statusDTO.setError(false);
+            statusDTO.setMessage("Talk: " + talk.getTopic() + " created!");
+            return statusDTO;
+        } catch (Exception e) {
+            statusDTO.setError(true);
+            statusDTO.setMessage("Unable to create talk! Try again");
+            return statusDTO;
+        } finally {
+            em.close();
+        }
+    }
+
+    public StatusDTO createSpeaker(CreateSpeakerDTO csd) {
+        StatusDTO statusDTO = new StatusDTO();
+        EntityManager em = emf.createEntityManager();
+        Speaker speaker = new Speaker(csd.getName(), csd.getProfession(), csd.getGender(), csd.getCompany());
+
+        try {
+            em.getTransaction().begin();
+            em.persist(speaker);
+            em.getTransaction().commit();
+
+
+            statusDTO.setError(false);
+            statusDTO.setMessage("Speaker: " + speaker.getName() + " created!");
+            return statusDTO;
+        }catch (Exception e) {
+            statusDTO.setError(true);
+            statusDTO.setMessage("Unable to create speaker! Try again");
+            return statusDTO;
+        }
+    }
+    //TODO
+//    public StatusDTO updateTalk (long talk_id) {
+//
+//        EntityManager em = emf.createEntityManager();
+//        Talk talk;
+//        try {
+//            talk = em.find(Talk.class, talk_id);
+//
+//        }
+//    }
 
     public List<SpeakerDTO> getSpeakersOnTalks(Talk talk) {
         List<SpeakerDTO> speakerDTOList = new ArrayList<>();
@@ -193,7 +245,6 @@ public class ConferenceFacade {
         }
         return speakerDTOList;
     }
-
 
 
 }

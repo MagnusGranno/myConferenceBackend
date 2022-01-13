@@ -1,6 +1,8 @@
 package rest;
 
 import DTO.CreateConferenceDTO;
+import DTO.CreateSpeakerDTO;
+import DTO.CreateTalkDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -40,11 +42,11 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("talk/{id}")
-   // @RolesAllowed({"user", "admin"})
+    // @RolesAllowed({"user", "admin"})
     public String getTalkById(@PathParam("id") long id) throws IOException {
         try {
             return gson.toJson(CONFERENCE_FACADE.getTalkByConference(id));
-        } catch (Exception e ) {
+        } catch (Exception e) {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
 
@@ -53,12 +55,12 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("talk/speaker/{id}")
-   // @RolesAllowed({"user", "admin"})
+    // @RolesAllowed({"user", "admin"})
     public String getTalkBySpeaker(@PathParam("id") long id) throws IOException {
 
         try {
             return gson.toJson(CONFERENCE_FACADE.getTalkBySpeaker(id));
-        } catch (Exception e ) {
+        } catch (Exception e) {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
 
@@ -72,7 +74,7 @@ public class ConferenceResource {
 
         try {
             return gson.toJson(CONFERENCE_FACADE.getAllSpeakers());
-        } catch (Exception e ) {
+        } catch (Exception e) {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this"));
         }
 
@@ -95,9 +97,47 @@ public class ConferenceResource {
             createConferenceDTO.setDate(json.get("date").getAsInt());
             createConferenceDTO.setTime(json.get("time").getAsString());
 
-        } catch(Exception e) {
-            throw new API_Exception("Malformed JSON Suplied",400,e);
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Suplied", 400, e);
         }
-            return gson.toJson(CONFERENCE_FACADE.createConference(createConferenceDTO));
+        return gson.toJson(CONFERENCE_FACADE.createConference(createConferenceDTO));
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("create/talk")
+    // @RolesAllowed({"user", "admin"})
+    public String createTalk(String jsonString) throws API_Exception {
+        CreateTalkDTO createTalkDTO = new CreateTalkDTO();
+        try {
+            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+            createTalkDTO.setTopic(json.get("topic").getAsString());
+            createTalkDTO.setDuration(json.get("duration").getAsInt());
+            createTalkDTO.setProps_list(json.get("props_list").getAsString());
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Suplied", 400, e);
+        }
+        return gson.toJson(CONFERENCE_FACADE.createTalk(createTalkDTO));
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("create/speaker")
+    // @RolesAllowed({"user", "admin"})
+    public String createSpeaker(String jsonString) throws API_Exception {
+        CreateSpeakerDTO createSpeakerDTO = new CreateSpeakerDTO();
+        try {
+            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+            createSpeakerDTO.setName(json.get("name").getAsString());
+            createSpeakerDTO.setProfession(json.get("profession").getAsString());
+            createSpeakerDTO.setCompany(json.get("company").getAsString());
+            createSpeakerDTO.setGender(json.get("gender").getAsString());
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Suplied", 400, e);
+        }
+        return gson.toJson(CONFERENCE_FACADE.createSpeaker(createSpeakerDTO));
+    }
+
 }
