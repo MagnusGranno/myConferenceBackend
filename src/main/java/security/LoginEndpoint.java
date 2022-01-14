@@ -110,15 +110,9 @@ public class LoginEndpoint {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
             username = json.get("username").getAsString();
             password = json.get("password").getAsString();
-
+            return gson.toJson(USER_FACADE.createUser(username,password));
         } catch(Exception e) {
             throw new API_Exception("Malformed JSON Suplied",400,e);
-        }
-
-        try {
-            return gson.toJson(USER_FACADE.createUser(username,password));
-        } catch (Exception e) {
-            throw new API_Exception("Malformed Json Suplied", 400, e);
         }
     }
 }
