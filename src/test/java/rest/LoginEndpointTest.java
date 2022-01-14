@@ -240,7 +240,7 @@ public class LoginEndpointTest {
         Response response = request.post("/login/signup");
 
         int statusCode = response.getStatusCode();
-        Assert.assertEquals(statusCode, 200);
+        Assert.assertEquals(200, statusCode);
         String statusMessage = response.jsonPath().get("message");
         Assert.assertEquals("Signup successful you can now login", statusMessage);
     }

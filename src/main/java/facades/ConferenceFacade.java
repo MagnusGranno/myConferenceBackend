@@ -99,7 +99,7 @@ public List<TalkDTO> getAllTalks() {
             TypedQuery<Talk> tq = em.createQuery("Select t from Talk t where t.conference = :conference", Talk.class);
             tq.setParameter("conference", conference);
             talkList = tq.getResultList();
-            
+
             for (Talk t : talkList) {
                 TalkDTO talkDTO = new TalkDTO();
                 talkDTO.convertToDTO(t);

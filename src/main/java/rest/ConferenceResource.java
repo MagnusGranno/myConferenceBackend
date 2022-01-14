@@ -27,7 +27,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("conferences")
-   // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getAllConferences() {
 
         try {
@@ -41,7 +41,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("talks")
-   // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getAllTalks() {
 
         try {
@@ -69,7 +69,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("talk/speaker/{id}")
-    // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getTalkBySpeaker(@PathParam("id") long id) throws IOException {
 
         try {
@@ -83,7 +83,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("speakers")
-    // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getallSpeakers() throws IOException {
 
         try {
@@ -98,7 +98,7 @@ public class ConferenceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("create/conference")
-    // @RolesAllowed({"user", "admin"})
+    @RolesAllowed("admin")
     public String createConference(String jsonString) throws API_Exception {
         CreateConferenceDTO createConferenceDTO = new CreateConferenceDTO();
         try {
@@ -121,7 +121,7 @@ public class ConferenceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("create/talk")
-    // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"admin"})
     public String createTalk(String jsonString) throws API_Exception {
         CreateTalkDTO createTalkDTO = new CreateTalkDTO();
         try {
@@ -141,7 +141,7 @@ public class ConferenceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("create/speaker")
-    // @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"admin"})
     public String createSpeaker(String jsonString) throws API_Exception {
         CreateSpeakerDTO createSpeakerDTO = new CreateSpeakerDTO();
         try {
