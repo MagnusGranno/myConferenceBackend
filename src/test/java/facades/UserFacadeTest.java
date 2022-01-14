@@ -37,12 +37,15 @@ public class UserFacadeTest {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = UserFacade.getUserFacade(emf);
 
+
         Role user_role = new Role("user");
         Role admin_role = new Role("admin");
 
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
+            em.createQuery("delete from Role").executeUpdate();
+            em.createQuery("delete from User").executeUpdate();
             em.persist(user_role);
             em.persist(admin_role);
             em.getTransaction().commit();
