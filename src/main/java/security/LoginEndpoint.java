@@ -101,7 +101,7 @@ public class LoginEndpoint {
     @Path("signup")
     public String createUser(String jsonString) throws API_Exception, AuthenticationException {
 
-        // SetupTestUsers.setupTestUsers();
+        SetupTestUsers.setupTestUsers();
 //asd
         String username;
         String password;
