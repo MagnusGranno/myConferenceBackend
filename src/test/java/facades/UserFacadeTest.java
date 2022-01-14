@@ -92,7 +92,7 @@ public class UserFacadeTest {
         }
     }
 
-    @Test
+   @Test
     public void createNewUserTest() {
         StatusDTO expectedDTO = new StatusDTO();
         StatusDTO actualDTO = facade.createUser("Clint", "barton");
@@ -103,7 +103,7 @@ public class UserFacadeTest {
 
     }
 
-    @Test
+   @Test
     public void createExistingUserTest() {
         StatusDTO expectedDTO = new StatusDTO();
         StatusDTO actualDTO = facade.createUser("Peter", "parker");
