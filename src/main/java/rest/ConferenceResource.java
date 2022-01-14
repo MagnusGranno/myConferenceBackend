@@ -27,11 +27,25 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("conferences")
-    @RolesAllowed({"user", "admin"})
-    public String getAllOwners() {
+   // @RolesAllowed({"user", "admin"})
+    public String getAllConferences() {
 
         try {
             return gson.toJson(CONFERENCE_FACADE.getConferences());
+        } catch (Exception e) {
+            return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this!"));
+        }
+
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("talks")
+   // @RolesAllowed({"user", "admin"})
+    public String getAllTalks() {
+
+        try {
+            return gson.toJson(CONFERENCE_FACADE.getAllTalks());
         } catch (Exception e) {
             return gson.toJson(CONFERENCE_FACADE.createStatusDTO(true, "You are not allowed to view this!"));
         }
@@ -115,6 +129,8 @@ public class ConferenceResource {
             createTalkDTO.setTopic(json.get("topic").getAsString());
             createTalkDTO.setDuration(json.get("duration").getAsInt());
             createTalkDTO.setProps_list(json.get("props_list").getAsString());
+            createTalkDTO.setConf_id(json.get("conf_id").getAsLong());
+            createTalkDTO.setSpeaker_id(json.get("speaker_id").getAsLong());
         } catch (Exception e) {
             throw new API_Exception("Malformed JSON Suplied", 400, e);
         }
@@ -134,6 +150,8 @@ public class ConferenceResource {
             createSpeakerDTO.setProfession(json.get("profession").getAsString());
             createSpeakerDTO.setCompany(json.get("company").getAsString());
             createSpeakerDTO.setGender(json.get("gender").getAsString());
+            createSpeakerDTO.setTalk_id(json.get("talk_id").getAsLong());
+            createSpeakerDTO.setConf_id(json.get("conf_id").getAsLong());
         } catch (Exception e) {
             throw new API_Exception("Malformed JSON Suplied", 400, e);
         }

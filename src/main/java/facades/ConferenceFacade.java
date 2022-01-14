@@ -63,7 +63,29 @@ public class ConferenceFacade {
         return conferenceDTOList;
     }
 
+public List<TalkDTO> getAllTalks() {
+    List<Talk> talkList = new ArrayList<>();
+    List<TalkDTO> talkDTOList = new ArrayList<>();
 
+    EntityManager em = emf.createEntityManager();
+
+    try {
+        em.getTransaction().begin();
+        TypedQuery<Talk> tq = em.createQuery("Select t from Talk t", Talk.class);
+        talkList = tq.getResultList();
+    } catch (Exception e) {
+        System.out.println(e);
+    } finally {
+        em.close();
+    }
+    for (Talk t : talkList) {
+        TalkDTO talkDTO = new TalkDTO();
+        talkDTO.convertToDTO(t);
+        talkDTO.setSpeaker_list(getSpeakersOnTalks(t));
+        talkDTOList.add(talkDTO);
+    }
+    return talkDTOList;
+}
     public List<TalkDTO> getTalkByConference(long conferenceId) {
 
         List<Talk> talkList = new ArrayList<>();
@@ -77,8 +99,7 @@ public class ConferenceFacade {
             TypedQuery<Talk> tq = em.createQuery("Select t from Talk t where t.conference = :conference", Talk.class);
             tq.setParameter("conference", conference);
             talkList = tq.getResultList();
-
-
+            
             for (Talk t : talkList) {
                 TalkDTO talkDTO = new TalkDTO();
                 talkDTO.convertToDTO(t);
@@ -174,9 +195,17 @@ public class ConferenceFacade {
         StatusDTO statusDTO = new StatusDTO();
         EntityManager em = emf.createEntityManager();
         Talk talk = new Talk(ctd.getTopic(), ctd.getDuration(), ctd.getProps_list());
+        Conference conference;
+        Speaker speaker;
 
         try {
             em.getTransaction().begin();
+            if (ctd.getConf_id() != 0 && ctd.getSpeaker_id() != 0) {
+                conference = em.find(Conference.class, ctd.getConf_id());
+                speaker = em.find(Speaker.class, ctd.getSpeaker_id());
+                conference.addTalk(talk);
+                speaker.addTalk(talk);
+            }
             em.persist(talk);
             em.getTransaction().commit();
 
@@ -196,9 +225,16 @@ public class ConferenceFacade {
         StatusDTO statusDTO = new StatusDTO();
         EntityManager em = emf.createEntityManager();
         Speaker speaker = new Speaker(csd.getName(), csd.getProfession(), csd.getGender(), csd.getCompany());
-
+        Talk talk;
+        Conference conference;
         try {
             em.getTransaction().begin();
+            if (csd.getTalk_id() != 0 && csd.getConf_id() != 0) {
+                talk = em.find(Talk.class, csd.getTalk_id());
+                conference = em.find(Conference.class, csd.getConf_id());
+                speaker.addTalk(talk);
+                conference.addTalk(talk);
+            }
             em.persist(speaker);
             em.getTransaction().commit();
 

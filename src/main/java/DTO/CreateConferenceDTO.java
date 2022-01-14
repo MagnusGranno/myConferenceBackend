@@ -16,4 +16,6 @@ public class CreateConferenceDTO {
     private int date;
     private int month;
     private String time;
+    private long talk_id;
+    private long speaker_id;
 }
