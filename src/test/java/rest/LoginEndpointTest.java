@@ -226,7 +226,7 @@ public class LoginEndpointTest {
                 .body("message", equalTo("Not authenticated - do login"));
     }
 
-  //  @Test
+   @Test
     public void createUserTest() {
         logOut();
         RestAssured.baseURI = SERVER_URL;
